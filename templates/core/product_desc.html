@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% load cart_template_tag %}
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Cart</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{% static 'img/favicon.png' %}" rel="icon">
+  <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+ 
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" >
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" >
+  <link rel="stylesheet" href="{% static 'vendor/boxicons/css/boxicons.min.css' %}" >
+  <link rel="stylesheet" href="{% static 'vendor/aos/aos.css' %}" >
+  <link rel="stylesheet" href="{% static 'vendor/glightbox/css/glightbox.min.css' %}" >
+  <link rel="stylesheet" href="{% static 'vendor/remixicon/remixicon.css' %}" >
+  <link rel="stylesheet" href="{% static 'vendor/swiper/swiper-bundle.min.css' %}" >
+
+  <!-- Template Main CSS File -->
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}" >
+  <style>
+    .product-img {
+        max-height: 400px;
+        object-fit: cover;
+    }
+    
+</style>
+</head>
+<body>
+      <header id="header" class="d-flex align-items-center mt-2">
+    <div class="container  ">
+      <div class="header-container shadow rounded d-flex align-items-center justify-content-between">
+        <div class="logo">
+          <h1 class="text-light"><a href='{% url "index" %}'><span>E-Com</span></a></h1>
+          <!-- Uncomment below if you prefer to use an image logo -->
+          <!-- <a href="index.html"><img src="{img/logo.png" alt="" class="img-fluid"></a>-->
+        </div>
+
+        <nav id="navbar" class="navbar">
+          <ul>
+            {% if user.is_authenticated %}
+            <li><a class="nav-link scrollto active" href='{% url "index" %}'>Home</a></li>
+            <li class="nav-item ">
+              <a class="nav-link scrollto active" href="{% url 'order_list' %}">
+                  <i class="fas fa-shopping-cart"></i> 
+                  <span class="badge badge-pill badge-danger">{{request.user | cart_item_count}}</span>
+              </a>
+          </li>
+         
+            <li><a class="getstarted " href='{% url "user_logout" %}'>Logout</a></li>
+
+            {% else %}
+            <li><a class="getstarted scrollto" href='{% url "user_login" %}'>Login</a></li>
+            <li><a class="getstarted scrollto" href='{% url "user_register" %}'>Register</a></li>
+            {% endif %}
+          </ul>
+          <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav>
+        <!-- .navbar -->
+
+      </div><!-- End Header Container -->
+    </div>
+  </header><!-- End Header -->
+    <!-- Navbar -->
+    <div class="container mt-5" >
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+      </div>
+      
+    <!-- Product Section -->
+    <div class="container border rounded shadow mt-2">
+        <div class="row py-4 px-2">
+            <!-- Image Gallery -->
+            <div class="col-md-6 border rounded">
+                <div id="productCarousel" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="{{ product.img.url }}" class="d-block w-100 product-img" alt="Product Image">
+                        </div>
+                        <!-- Add more carousel items here for additional images -->
+                    </div>
+                    <a class="carousel-control-prev" href="#productCarousel" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#productCarousel" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <div class="col-md-6">
+                <h3>{{ product.name }}</h3>
+                <p class="text-muted">Category: {{ product.category }}</p>
+                <p class="lead">{{ product.desc }}</p>
+                <h4>₹{{ product.price|floatformat:2 }}</h4>
+                <div class="d-flex justify-content-start mb-3">
+                    <a href="{% url 'add_to_cart' product.pk %}" class="btn btn-success mr-2">Add to Cart</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews or Additional Information (commented out) -->
+        {% comment %}
+        <div class="row mt-5">
+            <div class="col">
+                <h4>Customer Reviews</h4>
+                <!-- Add customer reviews here -->
+                <div class="media mb-3">
+                    <img src="https://via.placeholder.com/64" class="mr-3" alt="...">
+                    <div class="media-body">
+                        <h5 class="mt-0">Customer Name</h5>
+                        <p>Review content goes here...</p>
+                    </div>
+                </div>
+                <!-- Add more reviews as needed -->
+            </div>
+        </div>
+        {% endcomment %}
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
